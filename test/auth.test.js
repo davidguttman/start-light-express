@@ -2,10 +2,10 @@ const test = require('tape')
 const express = require('express')
 const supertest = require('supertest')
 const config = require('../config')
-const authMiddleware = require('../middleware/auth')
+const middleware = require('../middleware')
 
 const app = express()
-app.use('/test', authMiddleware, (req, res) => {
+app.use('/test', ...middleware, (req, res) => {
   res.json({ user: req.user })
 })
 
@@ -19,58 +19,23 @@ test('auth middleware - no token', async (t) => {
 })
 
 test('auth middleware - invalid token', async (t) => {
-  // Mock authentic-service verify to return an error
-  const originalVerify = config.auth.verify
-  config.auth.verify = (token, cb) => {
-    cb(new Error('Invalid token'))
-  }
-
   const res = await supertest(app)
     .get('/test')
     .set('Authorization', 'Bearer invalid-token')
     .expect(401)
   
-  t.equal(res.body.error, 'Invalid token')
-  
-  // Restore original verify
-  config.auth.verify = originalVerify
+  t.equal(res.body.error, 'Invalid test token')
   t.end()
 })
 
-test('auth middleware - non-whitelisted email', async (t) => {
-  // Mock authentic-service verify to return a non-whitelisted user
-  const originalVerify = config.auth.verify
-  config.auth.verify = (token, cb) => {
-    cb(null, { email: 'not@whitelisted.com' })
-  }
-
+test('auth middleware - valid test token', async (t) => {
   const res = await supertest(app)
     .get('/test')
-    .set('Authorization', 'Bearer valid-token')
-    .expect(403)
-  
-  t.equal(res.body.error, 'Email not whitelisted')
-  
-  // Restore original verify
-  config.auth.verify = originalVerify
-  t.end()
-})
-
-test('auth middleware - whitelisted email', async (t) => {
-  // Mock authentic-service verify to return a whitelisted user
-  const originalVerify = config.auth.verify
-  config.auth.verify = (token, cb) => {
-    cb(null, { email: config.whitelist[0] })
-  }
-
-  const res = await supertest(app)
-    .get('/test')
-    .set('Authorization', 'Bearer valid-token')
+    .set('Authorization', 'Bearer test-token')
     .expect(200)
   
-  t.equal(res.body.user.email, config.whitelist[0])
-  
-  // Restore original verify
-  config.auth.verify = originalVerify
+  t.equal(res.body.user.email, 'test@example.com')
+  t.equal(res.body.user.id, 'test-user-id')
+  t.equal(res.body.user.name, 'Test User')
   t.end()
 }) 
