@@ -1,5 +1,5 @@
 {
-  "name": "dg-node-express",
+  "name": "start-light-express",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
@@ -7,10 +7,18 @@
     "dev": "nodemon server.js",
     "test": "NODE_ENV=test node test/index.js"
   },
-  "keywords": [],
+  "keywords": [
+    "express",
+    "starter",
+    "template",
+    "mongodb",
+    "authentication",
+    "testing",
+    "production-ready"
+  ],
   "author": "David Guttman <david@davidguttman.com> (http://davidguttman.com/)",
   "license": "MIT",
-  "description": "A production-ready Node.js/Express starter with MongoDB, authentication, and logging",
+  "description": "A lightweight, illuminating Express.js starter template with MongoDB, authentication, and testing",
   "dependencies": {
     "authentic-service": "^1.0.0",
     "cuid": "^3.0.0",
