@@ -3,9 +3,7 @@ const router = express.Router()
 const authMiddleware = require('../middleware/auth')
 const autoCatch = require('../lib/auto-catch')
 const Widget = require('../models/widget')
-
-// Only use auth middleware in non-test environments
-const middleware = process.env.NODE_ENV === 'test' ? [] : [authMiddleware]
+const middleware = require('../middleware')
 
 /**
  * @openapi
