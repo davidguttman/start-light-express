@@ -122,8 +122,8 @@ test('widgets API - validation errors', async (t) => {
   const res = await supertest(server)
     .post('/widgets')
     .send(invalidWidget)
-    .expect(500)
+    .expect(400)
   
-  t.ok(res.body.error)
+  t.ok(res.body.error.includes('quantity'))
   t.end()
 }) 

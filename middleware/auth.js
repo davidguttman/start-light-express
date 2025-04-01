@@ -12,6 +12,10 @@ function authMiddleware(req, res, next) {
       return res.status(401).json({ error: 'Invalid token' })
     }
 
+    if (!user || !user.email) {
+      return res.status(401).json({ error: 'Invalid token' })
+    }
+
     if (!config.whitelist.includes(user.email)) {
       return res.status(403).json({ error: 'Email not whitelisted' })
     }

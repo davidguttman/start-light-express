@@ -19,12 +19,21 @@ test('auth middleware - no token', async (t) => {
 })
 
 test('auth middleware - invalid token', async (t) => {
+  // Mock authentic-service verify to return an error
+  const originalVerify = config.auth.verify
+  config.auth.verify = (token, cb) => {
+    cb(new Error('Invalid token'))
+  }
+
   const res = await supertest(app)
     .get('/test')
     .set('Authorization', 'Bearer invalid-token')
     .expect(401)
   
   t.equal(res.body.error, 'Invalid token')
+  
+  // Restore original verify
+  config.auth.verify = originalVerify
   t.end()
 })
 

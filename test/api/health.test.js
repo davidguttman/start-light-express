@@ -17,7 +17,7 @@ test('health endpoint - successful check', async (t) => {
 test('health endpoint - database error', async (t) => {
   // Mock mongoose.checkHealth to throw an error
   const originalCheckHealth = mongoose.checkHealth
-  mongoose.checkHealth = async () => {
+  mongoose.checkHealth = () => {
     throw new Error('Database connection failed')
   }
 

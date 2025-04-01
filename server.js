@@ -20,17 +20,25 @@ app.get('/health', autoCatch(async (req, res) => {
 if (process.env.NODE_ENV === 'test') {
   // In test environment, use mock auth
   const mockAuth = require('./test/helpers/mock-auth')
-  app.use('/widgets', (req, res, next) => {
-    mockAuth(req, res, next)
-  }, widgetsRouter)
+  app.use('/widgets', mockAuth, widgetsRouter)
 } else {
   app.use('/widgets', widgetsRouter)
 }
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  config.logger.error({ err }, 'Unhandled error')
-  res.status(500).json({ error: err.message })
+  // Log error
+  if (process.env.NODE_ENV !== 'test') {
+    config.logger.error({ err }, 'Unhandled error')
+  }
+  
+  // Handle validation errors
+  if (err.name === 'ValidationError') {
+    return res.status(400).json({ error: err.message })
+  }
+  
+  // Handle other errors
+  res.status(err.status || 500).json({ error: err.message || 'Internal Server Error' })
 })
 
 // Only start the server if this file is run directly

@@ -21,14 +21,14 @@ test('autoCatch - successful handler', async (t) => {
 test('autoCatch - error handler', async (t) => {
   const app = express()
   
-  // Error handling middleware
-  app.use((err, req, res, next) => {
-    res.status(500).json({ error: err.message })
-  })
-
   app.use('/test', autoCatch(async (req, res) => {
     throw new Error('Test error')
   }))
+
+  // Error handling middleware
+  app.use((err, req, res, next) => {
+    res.status(err.status || 500).json({ error: err.message })
+  })
 
   const res = await supertest(app)
     .get('/test')

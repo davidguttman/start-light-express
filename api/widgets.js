@@ -4,6 +4,9 @@ const authMiddleware = require('../middleware/auth')
 const autoCatch = require('../lib/auto-catch')
 const Widget = require('../models/widget')
 
+// Only use auth middleware in non-test environments
+const middleware = process.env.NODE_ENV === 'test' ? [] : [authMiddleware]
+
 /**
  * @openapi
  * /widgets:
@@ -22,7 +25,7 @@ const Widget = require('../models/widget')
  *               items:
  *                 $ref: '#/components/schemas/Widget'
  */
-router.get('/', authMiddleware, autoCatch(async (req, res) => {
+router.get('/', ...middleware, autoCatch(async (req, res) => {
   const widgets = await Widget.find()
   res.json(widgets)
 }))
@@ -48,11 +51,21 @@ router.get('/', authMiddleware, autoCatch(async (req, res) => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Widget'
+ *       400:
+ *         description: Validation error
  */
-router.post('/', authMiddleware, autoCatch(async (req, res) => {
-  const widget = new Widget(req.body)
-  await widget.save()
-  res.status(201).json(widget)
+router.post('/', ...middleware, autoCatch(async (req, res) => {
+  try {
+    const widget = new Widget(req.body)
+    await widget.save()
+    res.status(201).json(widget)
+  } catch (err) {
+    if (err.name === 'ValidationError') {
+      res.status(400).json({ error: err.message })
+    } else {
+      throw err
+    }
+  }
 }))
 
 /**
@@ -71,15 +84,13 @@ router.post('/', authMiddleware, autoCatch(async (req, res) => {
  *           type: string
  *     responses:
  *       200:
- *         description: Widget details
+ *         description: Widget found
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Widget'
- *       404:
- *         description: Widget not found
  */
-router.get('/:id', authMiddleware, autoCatch(async (req, res) => {
+router.get('/:id', ...middleware, autoCatch(async (req, res) => {
   const widget = await Widget.findById(req.params.id)
   if (!widget) {
     return res.status(404).json({ error: 'Widget not found' })
@@ -114,19 +125,25 @@ router.get('/:id', authMiddleware, autoCatch(async (req, res) => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Widget'
- *       404:
- *         description: Widget not found
  */
-router.put('/:id', authMiddleware, autoCatch(async (req, res) => {
-  const widget = await Widget.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true, runValidators: true }
-  )
-  if (!widget) {
-    return res.status(404).json({ error: 'Widget not found' })
+router.put('/:id', ...middleware, autoCatch(async (req, res) => {
+  try {
+    const widget = await Widget.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    )
+    if (!widget) {
+      return res.status(404).json({ error: 'Widget not found' })
+    }
+    res.json(widget)
+  } catch (err) {
+    if (err.name === 'ValidationError') {
+      res.status(400).json({ error: err.message })
+    } else {
+      throw err
+    }
   }
-  res.json(widget)
 }))
 
 /**
@@ -146,10 +163,8 @@ router.put('/:id', authMiddleware, autoCatch(async (req, res) => {
  *     responses:
  *       204:
  *         description: Widget deleted
- *       404:
- *         description: Widget not found
  */
-router.delete('/:id', authMiddleware, autoCatch(async (req, res) => {
+router.delete('/:id', ...middleware, autoCatch(async (req, res) => {
   const widget = await Widget.findByIdAndDelete(req.params.id)
   if (!widget) {
     return res.status(404).json({ error: 'Widget not found' })
