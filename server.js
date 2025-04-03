@@ -4,7 +4,9 @@ const config = require('./config')
 const mongoose = require('./lib/mongo')
 const autoCatch = require('./lib/auto-catch')
 const widgetsRouter = require('./api/widgets')
+const authTestRouter = require('./api/auth-test')
 const healthpoint = require('healthpoint')
+const authMiddleware = require('./middleware')
 
 const app = express()
 
@@ -19,13 +21,8 @@ app.get('/health', healthpoint(function (callback) {
 }))
 
 // API routes
-if (process.env.NODE_ENV === 'test') {
-  // In test environment, use mock auth
-  const mockAuth = require('./test/helpers/mock-auth')
-  app.use('/widgets', mockAuth, widgetsRouter)
-} else {
-  app.use('/widgets', widgetsRouter)
-}
+app.use('/widgets', authMiddleware, widgetsRouter)
+app.use('/auth', authMiddleware, authTestRouter)
 
 // Error handling middleware
 app.use((err, req, res, next) => {
