@@ -4,6 +4,7 @@ const config = require('./config')
 const mongoose = require('./lib/mongo')
 const autoCatch = require('./lib/auto-catch')
 const widgetsRouter = require('./api/widgets')
+const healthpoint = require('healthpoint')
 
 const app = express()
 
@@ -11,9 +12,10 @@ const app = express()
 app.use(express.json())
 
 // Health check endpoint
-app.get('/health', autoCatch(async (req, res) => {
-  await mongoose.checkHealth()
-  res.json({ status: 'OK' })
+app.get('/health', healthpoint(function (callback) {
+  mongoose.checkHealth()
+    .then(() => callback(null))
+    .catch(err => callback(err))
 }))
 
 // API routes
@@ -29,7 +31,7 @@ if (process.env.NODE_ENV === 'test') {
 app.use((err, req, res, next) => {
   // Log error
   if (process.env.NODE_ENV !== 'test') {
-    config.logger.error({ err }, 'Unhandled error')
+    console.error('Unhandled error:', err)
   }
   
   // Handle validation errors
@@ -45,7 +47,7 @@ app.use((err, req, res, next) => {
 if (require.main === module) {
   const port = config.port
   app.listen(port, () => {
-    config.logger.info({ port }, 'Server started')
+    console.log('Server started on port:', port)
   })
 }
 

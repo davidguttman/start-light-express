@@ -25,6 +25,7 @@
     "deasync": "^0.1.30",
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
+    "healthpoint": "^1.0.0",
     "mongodb-memory-server": "^10.1.4",
     "mongoose": "^8.13.1",
     "productionize": "^5.0.0",
