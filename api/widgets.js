@@ -7,7 +7,7 @@ const middleware = require('../middleware')
 
 /**
  * @openapi
- * /widgets:
+ * /api/widgets:
  *   get:
  *     summary: List all widgets
  *     tags: [Widgets]
@@ -30,7 +30,7 @@ router.get('/', ...middleware, autoCatch(async (req, res) => {
 
 /**
  * @openapi
- * /widgets:
+ * /api/widgets:
  *   post:
  *     summary: Create a new widget
  *     tags: [Widgets]
@@ -68,7 +68,7 @@ router.post('/', ...middleware, autoCatch(async (req, res) => {
 
 /**
  * @openapi
- * /widgets/{id}:
+ * /api/widgets/{id}:
  *   get:
  *     summary: Get a widget by ID
  *     tags: [Widgets]
@@ -98,7 +98,7 @@ router.get('/:id', ...middleware, autoCatch(async (req, res) => {
 
 /**
  * @openapi
- * /widgets/{id}:
+ * /api/widgets/{id}:
  *   put:
  *     summary: Update a widget
  *     tags: [Widgets]
@@ -146,7 +146,7 @@ router.put('/:id', ...middleware, autoCatch(async (req, res) => {
 
 /**
  * @openapi
- * /widgets/{id}:
+ * /api/widgets/{id}:
  *   delete:
  *     summary: Delete a widget
  *     tags: [Widgets]

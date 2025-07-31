@@ -86,13 +86,13 @@ Complete CRUD operations for widget resources.
 }
 ```
 
-### GET /widgets
+### GET /api/widgets
 
 List all widgets.
 
 **Request**:
 ```http
-GET /widgets
+GET /api/widgets
 Authorization: Bearer <token>
 ```
 
@@ -113,13 +113,13 @@ Authorization: Bearer <token>
 ]
 ```
 
-### POST /widgets
+### POST /api/widgets
 
 Create a new widget.
 
 **Request**:
 ```http
-POST /widgets
+POST /api/widgets
 Authorization: Bearer <token>
 Content-Type: application/json
 
@@ -169,13 +169,13 @@ Content-Type: application/json
 }
 ```
 
-### GET /widgets/:id
+### GET /api/widgets/:id
 
 Get a specific widget by ID.
 
 **Request**:
 ```http
-GET /widgets/ck7q8j2p40000qzrmn3k8jq2g
+GET /api/widgets/ck7q8j2p40000qzrmn3k8jq2g
 Authorization: Bearer <token>
 ```
 
@@ -201,7 +201,7 @@ Authorization: Bearer <token>
 }
 ```
 
-### PUT /widgets/:id
+### PUT /api/widgets/:id
 
 Update an existing widget (full replacement).
 
@@ -236,7 +236,7 @@ Content-Type: application/json
 }
 ```
 
-### DELETE /widgets/:id
+### DELETE /api/widgets/:id
 
 Delete a widget.
 
@@ -261,13 +261,13 @@ Authorization: Bearer <token>
 
 Routes for testing authentication functionality.
 
-### GET /auth/authTest
+### GET /api/auth/authTest
 
 Test authentication middleware.
 
 **Request**:
 ```http
-GET /auth/authTest
+GET /api/auth/authTest
 Authorization: Bearer <token>
 ```
 
@@ -282,13 +282,13 @@ Authorization: Bearer <token>
 }
 ```
 
-### GET /auth/errorTest
+### GET /api/auth/errorTest
 
 Test error handling (throws intentional error).
 
 **Request**:
 ```http
-GET /auth/errorTest  
+GET /api/auth/errorTest  
 Authorization: Bearer <token>
 ```
 

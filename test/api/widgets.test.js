@@ -23,7 +23,7 @@ const testWidget = {
 
 test('widgets API - create widget', async (t) => {
   const res = await supertest(server)
-    .post('/widgets')
+    .post('/api/widgets')
     .set('Authorization', 'Bearer test-token')
     .send(testWidget)
     .expect(201)
@@ -38,7 +38,7 @@ test('widgets API - create widget', async (t) => {
 
 test('widgets API - list widgets', async (t) => {
   const res = await supertest(server)
-    .get('/widgets')
+    .get('/api/widgets')
     .set('Authorization', 'Bearer test-token')
     .expect(200)
   
@@ -52,7 +52,7 @@ test('widgets API - list widgets', async (t) => {
 test('widgets API - get widget by id', async (t) => {
   // First create a widget
   const createRes = await supertest(server)
-    .post('/widgets')
+    .post('/api/widgets')
     .set('Authorization', 'Bearer test-token')
     .send(testWidget)
     .expect(201)
@@ -61,7 +61,7 @@ test('widgets API - get widget by id', async (t) => {
   
   // Then get it
   const res = await supertest(server)
-    .get(`/widgets/${widgetId}`)
+    .get(`/api/widgets/${widgetId}`)
     .set('Authorization', 'Bearer test-token')
     .expect(200)
   
@@ -73,7 +73,7 @@ test('widgets API - get widget by id', async (t) => {
 test('widgets API - update widget', async (t) => {
   // First create a widget
   const createRes = await supertest(server)
-    .post('/widgets')
+    .post('/api/widgets')
     .set('Authorization', 'Bearer test-token')
     .send(testWidget)
     .expect(201)
@@ -83,7 +83,7 @@ test('widgets API - update widget', async (t) => {
   
   // Then update it
   const res = await supertest(server)
-    .put(`/widgets/${widgetId}`)
+    .put(`/api/widgets/${widgetId}`)
     .set('Authorization', 'Bearer test-token')
     .send(updateData)
     .expect(200)
@@ -97,7 +97,7 @@ test('widgets API - update widget', async (t) => {
 test('widgets API - delete widget', async (t) => {
   // First create a widget
   const createRes = await supertest(server)
-    .post('/widgets')
+    .post('/api/widgets')
     .set('Authorization', 'Bearer test-token')
     .send(testWidget)
     .expect(201)
@@ -106,13 +106,13 @@ test('widgets API - delete widget', async (t) => {
   
   // Then delete it
   await supertest(server)
-    .delete(`/widgets/${widgetId}`)
+    .delete(`/api/widgets/${widgetId}`)
     .set('Authorization', 'Bearer test-token')
     .expect(204)
   
   // Verify it's gone
   await supertest(server)
-    .get(`/widgets/${widgetId}`)
+    .get(`/api/widgets/${widgetId}`)
     .set('Authorization', 'Bearer test-token')
     .expect(404)
   
@@ -129,7 +129,7 @@ test('widgets API - validation errors', async (t) => {
   }
   
   const res = await supertest(server)
-    .post('/widgets')
+    .post('/api/widgets')
     .set('Authorization', 'Bearer test-token')
     .send(invalidWidget)
     .expect(400)

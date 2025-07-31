@@ -21,8 +21,8 @@ app.get('/health', healthpoint(function (callback) {
 }))
 
 // API routes
-app.use('/widgets', authMiddleware, widgetsRouter)
-app.use('/auth', authMiddleware, authTestRouter)
+app.use('/api/widgets', authMiddleware, widgetsRouter)
+app.use('/api/auth', authMiddleware, authTestRouter)
 
 // Error handling middleware
 app.use((err, req, res, next) => {
