@@ -4,6 +4,7 @@ A lightweight, illuminating Express.js starter template that guides you toward p
 
 ## Features ✨
 
+### Backend
 - **Express Server**: Fast and minimalist web framework
 - **MongoDB Integration**: With Mongoose ORM and in-memory testing
 - **Authentication**: Built-in auth middleware with test environment support
@@ -12,6 +13,13 @@ A lightweight, illuminating Express.js starter template that guides you toward p
 - **Health Checks**: Built-in monitoring endpoint
 - **Environment Config**: Easy configuration with dotenv
 - **API Example**: Complete CRUD endpoints (Widgets API)
+
+### Frontend
+- **Single-Page Application**: Client-side routing with hash-based URLs
+- **Authentication**: Google OAuth via authentic-ui
+- **Mobile Support**: Responsive design
+- **Protected Routes**: Login required for certain pages
+- **API Client**: Handles authentication tokens
 
 ## Quick Start 🚀
 
@@ -45,10 +53,15 @@ npm run dev
 
 ## Development 💻
 
-The development server will restart on file changes:
+The development server starts both backend and frontend:
 ```bash
 npm run dev
 ```
+
+- Server files restart automatically via nodemon
+- Client files are bundled and served by budo
+- API routes (`/api/*`) served by Express
+- Everything else proxied to budo development server
 
 ## Testing 🧪
 
@@ -71,12 +84,44 @@ Features:
 npm start
 ```
 
+## Frontend
+
+The project includes a single-page application with:
+
+- **Routing**: Hash-based client-side routing with `http-hash`
+- **Authentication**: Google OAuth integration using `authentic-ui`
+- **Bundling**: Development server with `budo`
+- **API Client**: Handles Bearer tokens and error responses
+
+### Client Structure
+```
+client/
+├── index.js          # Main app and routing
+├── auth.js           # Authentication and Google OAuth
+├── api.js            # API client with token handling
+├── widgets.js        # Main app interface
+├── settings.js       # Settings page
+├── welcome.js        # Landing page
+├── route-guard.js    # Route protection
+├── state.js          # State management
+└── style/
+    └── index.js      # CSS styling
+```
+
 ## Project Structure 📁
 
 ```
 .
 ├── api/              # API routes
+├── client/           # Frontend SPA source code
+│   ├── index.js      # Main app entry and routing
+│   ├── auth.js       # Authentication & Google OAuth
+│   ├── api.js        # API client with token handling
+│   ├── widgets.js    # Main app interface
+│   ├── settings.js   # Settings page
+│   └── style/        # CSS styling
 ├── config/           # Configuration
+├── dist/             # Built client assets
 ├── lib/             # Shared libraries
 ├── middleware/      # Express middleware
 ├── models/          # Mongoose models
@@ -88,12 +133,20 @@ npm start
 
 ## API Endpoints 🛣️
 
+### Backend API
 - `GET /health` - Health check
-- `GET /widgets` - List widgets
-- `POST /widgets` - Create widget
-- `GET /widgets/:id` - Get widget
-- `PUT /widgets/:id` - Update widget
-- `DELETE /widgets/:id` - Delete widget
+- `GET /api/widgets` - List widgets (requires auth)
+- `POST /api/widgets` - Create widget (requires auth)
+- `GET /api/widgets/:id` - Get widget (requires auth)
+- `PUT /api/widgets/:id` - Update widget (requires auth)
+- `DELETE /api/widgets/:id` - Delete widget (requires auth)
+
+### Frontend Routes
+- `/#/` - Welcome page
+- `/#/login` - Sign in with Google OAuth
+- `/#/signup` - Account creation
+- `/#/widgets` - Main app (requires auth)
+- `/#/settings` - Settings page (requires auth)
 
 ## Code Style 📝
 
