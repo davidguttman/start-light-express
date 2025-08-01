@@ -1,15 +1,12 @@
 const config = require('../config')
 
 function authMiddleware(req, res, next) {
-  const authHeader = req.headers.authorization
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'No bearer token provided' })
-  }
-
-  const token = authHeader.split(' ')[1]
-  config.auth.verify(token, (err, user) => {
+  // Use authentic-service parseRequest function to handle token verification
+  config.auth(req, res, (err, user) => {
     if (err) {
-      return res.status(401).json({ error: 'Invalid token' })
+      // Handle different error types from authentic-service
+      const statusCode = err.statusCode || 401
+      return res.status(statusCode).json({ error: err.message || 'Authentication failed' })
     }
 
     if (!user || !user.email) {

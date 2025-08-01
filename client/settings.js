@@ -2,6 +2,7 @@ const html = require('nanohtml')
 const morph = require('nanomorph')
 
 const state = require('./state')()
+const { apiCall } = require('./api')
 
 module.exports = function (params) {
   const tree = render()
@@ -39,25 +40,24 @@ async function testAuth() {
   try {
     state.set({ authLoading: true, authError: null, authResult: null })
     
-    const response = await fetch('/api/auth/authTest')
+    const response = await apiCall('/api/auth/authTest')
     const result = await response.json()
     
-    if (response.ok) {
-      state.set({ 
-        authResult: result,
-        authLoading: false,
-        authStatus: 'success'
-      })
-    } else {
-      throw new Error(result.error || 'Authentication failed')
-    }
+    state.set({ 
+      authResult: result,
+      authLoading: false,
+      authStatus: 'success'
+    })
   } catch (error) {
     console.error('Auth test failed:', error)
-    state.set({ 
-      authError: error.message,
-      authLoading: false,
-      authStatus: 'error'
-    })
+    // Don't set error if it's a session expiry (401) - user will be redirected
+    if (error.message !== 'Session expired') {
+      state.set({ 
+        authError: error.message || 'Authentication failed',
+        authLoading: false,
+        authStatus: 'error'
+      })
+    }
   }
 }
 
@@ -65,22 +65,25 @@ async function testError() {
   try {
     state.set({ errorTestLoading: true, errorTestError: null, errorTestResult: null })
     
-    const response = await fetch('/api/auth/errorTest')
+    const response = await apiCall('/api/auth/errorTest')
     const result = await response.json()
     
     // This should always be an error
     state.set({ 
       errorTestResult: result,
       errorTestLoading: false,
-      errorTestStatus: response.ok ? 'unexpected' : 'expected'
+      errorTestStatus: 'unexpected' // If we get here, it's unexpected since this should error
     })
   } catch (error) {
     console.error('Error test failed:', error)
-    state.set({ 
-      errorTestError: error.message,
-      errorTestLoading: false,
-      errorTestStatus: 'network-error'
-    })
+    // Don't set error if it's a session expiry (401) - user will be redirected
+    if (error.message !== 'Session expired') {
+      state.set({ 
+        errorTestError: error.message,
+        errorTestLoading: false,
+        errorTestStatus: 'expected' // Expected behavior for error test
+      })
+    }
   }
 }
 

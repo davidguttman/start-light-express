@@ -2,6 +2,7 @@ const html = require('nanohtml')
 const morph = require('nanomorph')
 
 const state = require('./state')()
+const { apiCall } = require('./api')
 
 module.exports = function (params) {
   const tree = render()
@@ -17,19 +18,18 @@ async function loadWidgets() {
   try {
     state.set({ loading: true, error: null })
     
-    const response = await fetch('/api/widgets')
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-    
+    const response = await apiCall('/api/widgets')
     const widgets = await response.json()
     state.set({ widgets, loading: false })
   } catch (error) {
     console.error('Failed to load widgets:', error)
-    state.set({ 
-      error: 'Failed to load widgets. Please check if the server is running.',
-      loading: false 
-    })
+    // Don't set error if it's a session expiry (401) - user will be redirected
+    if (error.message !== 'Session expired') {
+      state.set({ 
+        error: error.message || 'Failed to load widgets. Please check if the server is running.',
+        loading: false 
+      })
+    }
   }
 }
 
@@ -48,17 +48,10 @@ async function createWidget(event) {
   }
 
   try {
-    const response = await fetch('/api/widgets', {
+    const response = await apiCall('/api/widgets', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
       body: JSON.stringify(widget)
     })
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
 
     // Reload widgets after successful creation
     form.reset()
@@ -69,7 +62,10 @@ async function createWidget(event) {
     setTimeout(() => state.set({ success: null }), 3000)
   } catch (error) {
     console.error('Failed to create widget:', error)
-    state.set({ error: 'Failed to create widget. Please try again.' })
+    // Don't set error if it's a session expiry (401) - user will be redirected
+    if (error.message !== 'Session expired') {
+      state.set({ error: error.message || 'Failed to create widget. Please try again.' })
+    }
   }
 }
 
@@ -79,13 +75,9 @@ async function deleteWidget(id) {
   }
 
   try {
-    const response = await fetch(`/api/widgets/${id}`, {
+    const response = await apiCall(`/api/widgets/${id}`, {
       method: 'DELETE'
     })
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
 
     // Reload widgets after successful deletion
     loadWidgets()
@@ -95,7 +87,10 @@ async function deleteWidget(id) {
     setTimeout(() => state.set({ success: null }), 3000)
   } catch (error) {
     console.error('Failed to delete widget:', error)
-    state.set({ error: 'Failed to delete widget. Please try again.' })
+    // Don't set error if it's a session expiry (401) - user will be redirected
+    if (error.message !== 'Session expired') {
+      state.set({ error: error.message || 'Failed to delete widget. Please try again.' })
+    }
   }
 }
 

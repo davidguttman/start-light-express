@@ -4,11 +4,11 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "NODE_ENV=development node server.js",
+    "dev": "NODE_ENV=development nodemon server.js",
     "test": "NODE_ENV=test node test/index.js",
-    "build": "browserify client/index.js | terser -mc > dist/index.js",
-    "build:dev": "browserify client/index.js > dist/index.js",
-    "build:watch": "watchify client/index.js -o dist/index.js -v"
+    "build": "browserify client/index.js -t localenvify | terser -mc > dist/index.js",
+    "build:dev": "browserify client/index.js -t localenvify > dist/index.js",
+    "build:watch": "watchify client/index.js -t localenvify -o dist/index.js -v"
   },
   "keywords": [
     "express",
@@ -23,7 +23,9 @@
   "license": "MIT",
   "description": "A lightweight, illuminating Express.js starter template with MongoDB, authentication, and testing",
   "dependencies": {
+    "authentic-client": "^2.2.0",
     "authentic-service": "^1.0.0",
+    "authentic-ui": "^4.0.3",
     "cuid": "^3.0.0",
     "deasync": "^0.1.30",
     "dotenv": "^16.4.7",
@@ -37,16 +39,19 @@
     "nanohtml": "^1.10.0",
     "nanomorph": "^5.4.3",
     "productionize": "^5.0.0",
+    "querystring": "^0.2.1",
     "supertest": "^7.1.0",
     "tape": "^5.9.0",
     "wildemitter": "^1.2.1"
   },
   "devDependencies": {
-    "budo": "^11.7.0",
     "browserify": "^17.0.0",
+    "budo": "^11.7.0",
     "get-port": "^6.1.2",
     "http-proxy-middleware": "^2.0.6",
+    "localenvify": "^1.0.1",
     "nodemon": "^3.1.0",
+    "playwright": "^1.54.2",
     "terser": "^5.13.1"
   }
 }

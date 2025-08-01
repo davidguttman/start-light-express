@@ -23,7 +23,7 @@ function render () {
         <li>Widget CRUD API at <code>/api/widgets</code></li>
         <li>Health monitoring at <code>/health</code></li>
         <li>Client-side routing with hash-based navigation</li>
-        <li>Development server with live reload</li>
+        <li>Development server with auto-restart</li>
       </ul>
 
       <h2>API Endpoints</h2>

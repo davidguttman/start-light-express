@@ -9,7 +9,7 @@ const defaults = {
   googleProjectId: '',
   googleApplicationCredentials: '',
   authenticServer: '',
-  whitelist: ['david@davidguttman.com']
+  whitelist: ['david@davidguttman.com', 'claude@guttman.io']
 }
 
 // Merge defaults with environment variables
