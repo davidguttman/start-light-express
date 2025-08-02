@@ -25,7 +25,7 @@
   "dependencies": {
     "authentic-client": "^2.2.0",
     "authentic-service": "^1.0.0",
-    "authentic-ui": "^4.0.3",
+    "authentic-ui": "^5.0.0",
     "cuid": "^3.0.0",
     "deasync": "^0.1.30",
     "dotenv": "^16.4.7",
