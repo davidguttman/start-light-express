@@ -1,4 +1,4 @@
-const mongoose = require('../../lib/mongo')
+import mongoose from '../../lib/mongo/index.js'
 
 async function cleanup() {
   if (process.env.NODE_ENV === 'test') {
@@ -9,4 +9,4 @@ async function cleanup() {
 // Ensure cleanup happens on process exit
 process.on('exit', cleanup)
 
-module.exports = cleanup 
+export default cleanup 

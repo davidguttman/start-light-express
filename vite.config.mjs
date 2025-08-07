@@ -2,9 +2,9 @@ import { defineConfig } from 'vite'
 import legacy from '@vitejs/plugin-legacy'
 
 export default defineConfig({
-  root: '.',
+  root: 'public',
   build: {
-    outDir: 'dist',
+    outDir: '../dist',
     rollupOptions: {
       input: 'public/index.html'
     },

@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
-const cuid = require('cuid')
+import mongoose from 'mongoose'
+import cuid from 'cuid'
 
 const widgetSchema = new mongoose.Schema({
   _id: {
@@ -31,4 +31,4 @@ const widgetSchema = new mongoose.Schema({
   }
 })
 
-module.exports = mongoose.model('Widget', widgetSchema) 
+export default mongoose.model('Widget', widgetSchema) 

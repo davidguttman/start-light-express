@@ -1,5 +1,5 @@
-require('dotenv').config()
-const productionize = require('productionize')
+import 'dotenv/config'
+import productionize from 'productionize'
 
 // Default configuration
 const defaults = {
@@ -34,11 +34,12 @@ const logger = productionize({
 })
 
 // Configure auth
-const auth = require('authentic-service')({
+import authenticService from 'authentic-service'
+const auth = authenticService({
   server: config.authenticServer
 })
 
-module.exports = {
+export default {
   ...config,
   logger,
   auth

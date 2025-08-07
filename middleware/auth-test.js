@@ -1,4 +1,4 @@
-const config = require('../config')
+import config from '../config/index.js'
 
 function authTestMiddleware(req, res, next) {
   // In test environment, we'll use a predictable test user
@@ -24,4 +24,4 @@ function authTestMiddleware(req, res, next) {
   next()
 }
 
-module.exports = authTestMiddleware 
+export default authTestMiddleware 

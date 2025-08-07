@@ -1,9 +1,14 @@
 // Force test environment
 process.env.NODE_ENV = 'test'
 
-const test = require('tape')
-const glob = require('glob')
-const cleanup = require('./helpers/cleanup')
+import test from 'tape'
+import glob from 'glob'
+import cleanup from './helpers/cleanup.js'
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 const TIMEOUT = 10 * 1000
 
@@ -18,13 +23,13 @@ const specifiedFiles = process.argv.slice(2).length > 0
   ? process.argv.slice(2)
   : getAllTestFiles()
 
-const filesToTest = specifiedFiles.map(relativeToRequire)
+const filesToTest = specifiedFiles.map(relativeToImport)
 
 // Load all test files - tape will run them in sequence
-filesToTest.forEach(file => {
+for (const file of filesToTest) {
   test(`File: ${file}`, t => t.end())
-  require(file)
-})
+  await import(file)
+}
 
 // Run final cleanup after all tests complete
 test('cleanup', async t => {
@@ -48,6 +53,6 @@ function getAllTestFiles() {
   })
 }
 
-function relativeToRequire(relativePath) {
-  return './' + relativePath.replace(/^test\//, '').replace(/\.js$/, '')
+function relativeToImport(relativePath) {
+  return './' + relativePath.replace(/^test\//, '')
 }

@@ -1,9 +1,9 @@
-const express = require('express')
+import express from 'express'
 const router = express.Router()
-const authMiddleware = require('../middleware/auth')
-const autoCatch = require('../lib/auto-catch')
-const Widget = require('../models/widget')
-const middleware = require('../middleware')
+import authMiddleware from '../middleware/auth.js'
+import autoCatch from '../lib/auto-catch.js'
+import Widget from '../models/widget.js'
+import middleware from '../middleware/index.js'
 
 /**
  * @openapi
@@ -170,4 +170,4 @@ router.delete('/:id', ...middleware, autoCatch(async (req, res) => {
   res.status(204).send()
 }))
 
-module.exports = router 
+export default router 

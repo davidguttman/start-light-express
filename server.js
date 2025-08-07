@@ -1,13 +1,13 @@
-require('dotenv').config()
-const express = require('express')
-const config = require('./config')
-const mongoose = require('./lib/mongo')
-const autoCatch = require('./lib/auto-catch')
-const widgetsRouter = require('./api/widgets')
-const authTestRouter = require('./api/auth-test')
-const healthpoint = require('healthpoint')
-const authMiddleware = require('./middleware')
-const { setupDevServer, shutdownViteServer } = require('./lib/client-setup')
+import 'dotenv/config'
+import express from 'express'
+import config from './config/index.js'
+import mongoose from './lib/mongo/index.js'
+import autoCatch from './lib/auto-catch.js'
+import widgetsRouter from './api/widgets.js'
+import authTestRouter from './api/auth-test.js'
+import healthpoint from 'healthpoint'
+import authMiddleware from './middleware/index.js'
+import { setupDevServer, shutdownViteServer } from './lib/client-setup.js'
 
 const app = express()
 
@@ -68,7 +68,7 @@ process.on('SIGTERM', async () => {
 let viteServerRef = null
 
 // Only start the server if this file is run directly
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   const port = config.port
   
   // Setup client development/production serving
@@ -96,4 +96,4 @@ if (require.main === module) {
   })
 }
 
-module.exports = app 
+export default app 

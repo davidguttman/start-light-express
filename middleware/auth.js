@@ -1,4 +1,4 @@
-const config = require('../config')
+import config from '../config/index.js'
 
 function authMiddleware(req, res, next) {
   // Use authentic-service parseRequest function to handle token verification
@@ -22,4 +22,4 @@ function authMiddleware(req, res, next) {
   })
 }
 
-module.exports = authMiddleware 
+export default authMiddleware 

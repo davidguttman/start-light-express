@@ -1,7 +1,7 @@
-const test = require('tape')
-const express = require('express')
-const supertest = require('supertest')
-const autoCatch = require('../lib/auto-catch')
+import test from 'tape'
+import express from 'express'
+import supertest from 'supertest'
+import autoCatch from '../lib/auto-catch.js'
 
 test('autoCatch - successful handler', async (t) => {
   const app = express()

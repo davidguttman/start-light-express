@@ -1,9 +1,9 @@
-const test = require('tape')
-const supertest = require('supertest')
-const mongoose = require('../../lib/mongo')
+import test from 'tape'
+import supertest from 'supertest'
+import mongoose from '../../lib/mongo/index.js'
 
 // Import server but don't start it
-const server = require('../../server')
+import server from '../../server.js'
 
 test('health endpoint - successful check', async (t) => {
   const res = await supertest(server)

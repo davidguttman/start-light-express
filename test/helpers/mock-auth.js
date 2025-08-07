@@ -1,8 +1,8 @@
-const config = require('../../config')
+import config from '../../config/index.js'
 
 function mockAuth(req, res, next) {
   req.user = { email: config.whitelist[0] }
   next()
 }
 
-module.exports = mockAuth 
+export default mockAuth 
