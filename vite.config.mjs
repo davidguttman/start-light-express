@@ -6,7 +6,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     rollupOptions: {
-      input: 'index.html'
+      input: 'public/index.html'
     },
     // Don't empty dist since it contains index.html
     emptyOutDir: false
