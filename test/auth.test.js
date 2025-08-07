@@ -1,8 +1,8 @@
-const test = require('tape')
-const express = require('express')
-const supertest = require('supertest')
-const config = require('../config')
-const middleware = require('../middleware')
+import test from 'tape'
+import express from 'express'
+import supertest from 'supertest'
+import config from '../config/index.js'
+import middleware from '../middleware/index.js'
 
 const app = express()
 app.use('/test', ...middleware, (req, res) => {

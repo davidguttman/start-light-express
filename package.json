@@ -6,16 +6,12 @@
   "scripts": {
     "start": "node server.js",
     "dev": "NODE_ENV=development nodemon server.js",
-    "test": "NODE_ENV=test node test/index.js",
+    "test": "node test/run-tests.js",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint client/ --ext .js",
-    "lint:fix": "eslint client/ --ext .js --fix",
-    "test:baseline": "npm test test/migration-baseline.test.js",
-    "test:phase1": "npm test test/phase-1.test.js",
-    "test:phase3": "npm test test/phase-3.test.js",
-    "test:phase4": "npm test test/phase-4.test.js"
+    "lint:fix": "eslint client/ --ext .js --fix"
   },
   "keywords": [
     "express",
@@ -34,7 +30,6 @@
     "authentic-service": "^1.0.0",
     "authentic-ui": "^5.0.1",
     "cuid": "^3.0.0",
-    "deasync": "^0.1.30",
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
     "healthpoint": "^1.0.0",

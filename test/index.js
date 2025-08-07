@@ -1,5 +1,6 @@
 // Force test environment
 process.env.NODE_ENV = 'test'
+process.env.AUTHENTIC_SERVER = 'https://test.authentic.example.com'
 
 import test from 'tape'
 import glob from 'glob'
@@ -39,10 +40,18 @@ test('cleanup', async t => {
     console.log('Final cleanup complete')
     clearTimeout(timeout)
     t.end()
+    // Force exit after cleanup because MongoDB might keep event loop alive
+    setTimeout(() => {
+      console.log('Exiting after cleanup complete')
+      process.exit(0)
+    }, 500)
   } catch (err) {
     console.error('Final cleanup error:', err)
     t.error(err)
     t.end()
+    setTimeout(() => {
+      process.exit(1)
+    }, 100)
   }
 })
 

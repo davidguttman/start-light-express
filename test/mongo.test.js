@@ -1,5 +1,5 @@
-const test = require('tape')
-const mongoose = require('../lib/mongo')
+import test from 'tape'
+import mongoose from '../lib/mongo/index.js'
 
 test('MongoDB health check', async (t) => {
   try {
@@ -11,4 +11,14 @@ test('MongoDB health check', async (t) => {
     t.error(err)
     t.end()
   }
-}) 
+})
+
+// Cleanup when running individual test file
+if (import.meta.url === `file://${process.argv[1]}`) {
+  import('./helpers/cleanup.js').then(({ default: cleanup }) => {
+    setTimeout(async () => {
+      await cleanup()
+      process.exit(0)
+    }, 500)
+  })
+} 

@@ -30,4 +30,14 @@ test('health endpoint - database error', async (t) => {
   // Restore original checkHealth
   mongoose.checkHealth = originalCheckHealth
   t.end()
-}) 
+})
+
+// Cleanup when running individual test file
+if (import.meta.url === `file://${process.argv[1]}`) {
+  import('../helpers/cleanup.js').then(({ default: cleanup }) => {
+    setTimeout(async () => {
+      await cleanup()
+      process.exit(0)
+    }, 500)
+  })
+} 
