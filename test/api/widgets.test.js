@@ -1,8 +1,8 @@
-const test = require('tape')
-const supertest = require('supertest')
-const mongoose = require('../../lib/mongo')
-const config = require('../../config')
-const server = require('../../server')
+import test from 'tape'
+import supertest from 'supertest'
+import mongoose from '../../lib/mongo/index.js'
+import config from '../../config/index.js'
+import server from '../../server.js'
 
 // Test data
 const testWidget = {

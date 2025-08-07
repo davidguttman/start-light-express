@@ -1,6 +1,12 @@
 import config from '../config/index.js'
 
 function authMiddleware(req, res, next) {
+  // Check for forced auth email bypass
+  if (config.forceAuthEmail) {
+    req.user = { email: config.forceAuthEmail }
+    return next()
+  }
+
   // Use authentic-service parseRequest function to handle token verification
   config.auth(req, res, (err, user) => {
     if (err) {

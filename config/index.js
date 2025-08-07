@@ -9,7 +9,8 @@ const defaults = {
   googleProjectId: '',
   googleApplicationCredentials: '',
   authenticServer: '',
-  whitelist: []
+  whitelist: [],
+  forceAuthEmail: null
 }
 
 // Merge defaults with environment variables
@@ -21,7 +22,8 @@ const config = {
   googleProjectId: process.env.GOOGLE_PROJECT_ID || defaults.googleProjectId,
   googleApplicationCredentials: process.env.GOOGLE_APPLICATION_CREDENTIALS || defaults.googleApplicationCredentials,
   authenticServer: process.env.AUTHENTIC_SERVER || defaults.authenticServer,
-  whitelist: process.env.WHITELIST ? process.env.WHITELIST.split(',') : defaults.whitelist
+  whitelist: process.env.WHITELIST ? process.env.WHITELIST.split(',') : defaults.whitelist,
+  forceAuthEmail: process.env.FORCE_AUTH_EMAIL || defaults.forceAuthEmail
 }
 
 // Configure logging based on environment
