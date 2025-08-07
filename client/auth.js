@@ -2,14 +2,14 @@ import qs from 'querystring'
 import AuthenticUI from 'authentic-ui'
 import html from 'nanohtml'
 
-// Initialize authentic UI with environment variable (will be configured by Vite)
-// VITE_AUTHENTIC_SERVER must be set in environment variables
-if (!import.meta.env.VITE_AUTHENTIC_SERVER) {
-  throw new Error('VITE_AUTHENTIC_SERVER environment variable is required')
+// Initialize authentic UI with environment variable (exposed by Vite)
+// AUTHENTIC_SERVER must be set in environment variables
+if (!__AUTHENTIC_SERVER__) {
+  throw new Error('AUTHENTIC_SERVER environment variable is required')
 }
 
 const aui = AuthenticUI({
-  server: import.meta.env.VITE_AUTHENTIC_SERVER, // Required: Set VITE_AUTHENTIC_SERVER in environment
+  server: __AUTHENTIC_SERVER__, // Required: Set AUTHENTIC_SERVER in environment
   prefix: '/auth', // Use default authentic prefix
   googleSignIn: true, // Enable Google Sign-In
   styles: false, // Disable default styles to use our own
@@ -25,7 +25,7 @@ const aui = AuthenticUI({
   }
 })
 
-console.log('Authentic UI initialized with server:', import.meta.env.VITE_AUTHENTIC_SERVER)
+console.log('Authentic UI initialized with server:', __AUTHENTIC_SERVER__)
 
 // Auth state management
 let authState = {
@@ -36,6 +36,17 @@ let authState = {
 
 // Initialize auth state from localStorage or authentic-ui
 function initAuthState() {
+  // Check for forced auth via environment variable (development only)
+  if (typeof __FORCE_AUTH_EMAIL__ !== 'undefined' && __FORCE_AUTH_EMAIL__) {
+    authState = {
+      isLoggedIn: true,
+      email: __FORCE_AUTH_EMAIL__,
+      authToken: 'force-auth-token' // Fake token for consistency
+    }
+    console.log('Auth state forced via environment variable:', __FORCE_AUTH_EMAIL__)
+    return
+  }
+  
   const token = aui.authToken()
   const email = aui.email()
   
@@ -91,6 +102,12 @@ function clearAuthState() {
 
 // Logout handler
 function handleLogout() {
+  // Don't allow logout if force auth is enabled
+  if (typeof __FORCE_AUTH_EMAIL__ !== 'undefined' && __FORCE_AUTH_EMAIL__) {
+    console.log('Logout disabled - force auth is enabled')
+    return
+  }
+  
   clearAuthState()
   
   console.log('User logged out')

@@ -51,8 +51,19 @@ Environment variables are loaded via dotenv. See `.env.example` for required var
 - `MONGO_DB_NAME` - Database name
 - `GOOGLE_PROJECT_ID` - For productionize logging
 - `GOOGLE_APPLICATION_CREDENTIALS` - Service account key path
-- `AUTHENTIC_SERVER` - Authentication server URL
+- `AUTHENTIC_SERVER` - Authentication server URL (used by both client and server via Vite define)
 - `WHITELIST` - Comma-separated list of authorized emails
+- `FORCE_AUTH_EMAIL` - **Development only**: Bypass authentication for both client and server using specified email
+
+**Note**: Environment variables are automatically exposed to the client via Vite's `define` feature. No `VITE_` prefix required.
+
+### Force Authentication Bypass (Development)
+
+Set `FORCE_AUTH_EMAIL=user@example.com` to bypass authentication entirely:
+- **Server**: All API requests treated as authenticated with the specified email
+- **Client**: Automatically shows logged-in state with the specified email
+- **Usage**: Ideal for development when you want to skip auth flows
+- **Security**: Never use in production - development feature only
 
 ## Code Style
 

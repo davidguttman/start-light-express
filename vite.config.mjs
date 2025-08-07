@@ -3,6 +3,11 @@ import legacy from '@vitejs/plugin-legacy'
 
 export default defineConfig({
   root: '.',
+  define: {
+    // Expose environment variables to the client
+    __FORCE_AUTH_EMAIL__: JSON.stringify(process.env.FORCE_AUTH_EMAIL || null),
+    __AUTHENTIC_SERVER__: JSON.stringify(process.env.AUTHENTIC_SERVER || '')
+  },
   resolve: {
     alias: {
       '@client': '/client'
