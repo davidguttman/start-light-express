@@ -6,9 +6,15 @@
     "start": "node server.js",
     "dev": "NODE_ENV=development nodemon server.js",
     "test": "NODE_ENV=test node test/index.js",
-    "build": "browserify client/index.js -t localenvify | terser -mc > dist/index.js",
-    "build:dev": "browserify client/index.js -t localenvify > dist/index.js",
-    "build:watch": "watchify client/index.js -t localenvify -o dist/index.js -v"
+    "build": "vite build",
+    "build:dev": "vite build --mode development",
+    "preview": "vite preview",
+    "lint": "eslint client/ --ext .js",
+    "lint:fix": "eslint client/ --ext .js --fix",
+    "test:baseline": "npm test test/migration-baseline.test.js",
+    "test:phase1": "npm test test/phase-1.test.js",
+    "test:phase3": "npm test test/phase-3.test.js",
+    "test:phase4": "npm test test/phase-4.test.js"
   },
   "keywords": [
     "express",
@@ -25,7 +31,7 @@
   "dependencies": {
     "authentic-client": "^2.2.0",
     "authentic-service": "^1.0.0",
-    "authentic-ui": "^5.0.0",
+    "authentic-ui": "^5.0.1",
     "cuid": "^3.0.0",
     "deasync": "^0.1.30",
     "dotenv": "^16.4.7",
@@ -45,13 +51,13 @@
     "wildemitter": "^1.2.1"
   },
   "devDependencies": {
-    "browserify": "^17.0.0",
-    "budo": "^11.7.0",
-    "get-port": "^6.1.2",
-    "http-proxy-middleware": "^2.0.6",
-    "localenvify": "^1.0.1",
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@vitejs/plugin-legacy": "^7.1.0",
+    "eslint": "^9.32.0",
+    "eslint-plugin-no-unsanitized": "^4.1.2",
+    "http-proxy-middleware": "^3.0.5",
     "nodemon": "^3.1.0",
     "playwright": "^1.54.2",
-    "terser": "^5.13.1"
+    "vite": "^7.0.6"
   }
 }

@@ -1,4 +1,4 @@
-const insert = require('insert-css')
+import insert from 'insert-css'
 
 insert(`
   body {

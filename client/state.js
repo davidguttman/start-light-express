@@ -1,16 +1,36 @@
-const set = require('lodash.set')
-const Emitter = require('wildemitter')
+import set from 'lodash.set'
+import Emitter from 'wildemitter'
 
-module.exports = function createState () {
-  return new Emitter()
+export default function createState (initialState = {}) {
+  const state = new Emitter()
+  state.set(initialState)
+  return state
 }
 
-Emitter.prototype.set = function (path, value) {
-  if (typeof path === 'object') {
-    return Object.keys(path).map(k => this.set(k, path[k]))
+Emitter.prototype.set = function (
+  path,
+  value,
+  opts = { silent: false, prefix: '' }
+) {
+  if (typeof path === 'object' && !Array.isArray(path)) {
+    opts = value || opts
+    return Object.entries(path).forEach(([key, val]) => {
+      this.set(key, val, opts)
+    })
   }
 
-  set(this, path, value)
-  this.emit(path, value)
+  if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+    const fullPath = opts.prefix ? `${opts.prefix}.${path}` : path
+    Object.entries(value).forEach(([key, val]) => {
+      this.set(`${fullPath}.${key}`, val, opts)
+    })
+  }
+
+  const fullPath = opts.prefix ? `${opts.prefix}.${path}` : path
+  set(this, fullPath, value)
+  if (!opts.silent) {
+    this.emit(path, value)
+  }
+
   return value
 }

@@ -1,9 +1,15 @@
-const qs = require('querystring')
-const AuthenticUI = require('authentic-ui')
+import qs from 'querystring'
+import AuthenticUI from 'authentic-ui'
+import html from 'nanohtml'
 
-// Initialize authentic UI with environment variable (injected by localenvify)
+// Initialize authentic UI with environment variable (will be configured by Vite)
+// VITE_AUTHENTIC_SERVER must be set in environment variables
+if (!import.meta.env.VITE_AUTHENTIC_SERVER) {
+  throw new Error('VITE_AUTHENTIC_SERVER environment variable is required')
+}
+
 const aui = AuthenticUI({
-  server: process.env.AUTHENTIC_SERVER, // Injected by localenvify at build time
+  server: import.meta.env.VITE_AUTHENTIC_SERVER, // Required: Set VITE_AUTHENTIC_SERVER in environment
   prefix: '/auth', // Use default authentic prefix
   googleSignIn: true, // Enable Google Sign-In
   styles: false, // Disable default styles to use our own
@@ -19,7 +25,7 @@ const aui = AuthenticUI({
   }
 })
 
-console.log('Authentic UI initialized with server:', process.env.AUTHENTIC_SERVER)
+console.log('Authentic UI initialized with server:', import.meta.env.VITE_AUTHENTIC_SERVER)
 
 // Auth state management
 let authState = {
@@ -141,13 +147,14 @@ function createConfirm() {
   const query = qs.parse(window.location.search.slice(1))
   
   if (!query.email || !query.confirmToken) {
-    container.innerHTML = `
+    const errorEl = html`
       <div class="content">
         <h2>Invalid Confirmation Link</h2>
         <p>This confirmation link appears to be invalid or expired.</p>
         <a href="#/signup" class="btn">Try Signing Up Again</a>
       </div>
     `
+    container.appendChild(errorEl)
     return container
   }
   
@@ -188,13 +195,14 @@ function createChangePassword() {
   const query = qs.parse(window.location.search.slice(1))
   
   if (!query.email || !query.changeToken) {
-    container.innerHTML = `
+    const errorEl = html`
       <div class="content">
         <h2>Invalid Password Reset Link</h2>
         <p>This password reset link appears to be invalid or expired.</p>
         <a href="#/change-password-request" class="btn">Request New Reset Link</a>
       </div>
     `
+    container.appendChild(errorEl)
     return container
   }
   
@@ -211,7 +219,7 @@ function createChangePassword() {
 // Initialize auth state on module load
 initAuthState()
 
-module.exports = {
+export {
   getAuthState,
   initAuthState,
   clearAuthState,

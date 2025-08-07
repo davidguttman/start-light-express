@@ -1,4 +1,5 @@
 // Note: auth state will be passed as parameter to avoid circular dependency
+import html from 'nanohtml'
 
 // Define protected routes that require authentication
 const PROTECTED_ROUTES = [
@@ -64,20 +65,19 @@ function guardRoute(route, authState = { isLoggedIn: false }) {
  * @returns {HTMLElement} - Auth required message element
  */
 function createAuthRequiredElement(routeName) {
-  const container = document.createElement('div')
-  container.className = 'content'
-  container.innerHTML = `
-    <h2>Authentication Required</h2>
-    <p>You need to be logged in to access ${routeName}.</p>
-    <div style="margin-top: 1rem;">
-      <a href="#/login" class="btn">Log In</a>
-      <a href="#/signup" class="btn btn-secondary" style="margin-left: 1rem;">Sign Up</a>
+  return html`
+    <div class="content">
+      <h2>Authentication Required</h2>
+      <p>You need to be logged in to access ${routeName}.</p>
+      <div style="margin-top: 1rem;">
+        <a href="#/login" class="btn">Log In</a>
+        <a href="#/signup" class="btn btn-secondary" style="margin-left: 1rem;">Sign Up</a>
+      </div>
     </div>
   `
-  return container
 }
 
-module.exports = {
+export {
   isProtectedRoute,
   isPublicRoute,
   guardRoute,

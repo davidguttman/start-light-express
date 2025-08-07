@@ -7,7 +7,7 @@ const widgetsRouter = require('./api/widgets')
 const authTestRouter = require('./api/auth-test')
 const healthpoint = require('healthpoint')
 const authMiddleware = require('./middleware')
-const { setupDevServer, shutdownBudoServer } = require('./lib/client-setup')
+const { setupDevServer, shutdownViteServer } = require('./lib/client-setup')
 
 const app = express()
 
@@ -24,6 +24,8 @@ app.get('/health', healthpoint(function (callback) {
 // API routes
 app.use('/api/widgets', authMiddleware, widgetsRouter)
 app.use('/api/auth', authMiddleware, authTestRouter)
+
+// Client proxy middleware will be added here by setupDevServer
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -45,8 +47,8 @@ app.use((err, req, res, next) => {
 process.on('SIGINT', async () => {
   console.log('Received SIGINT, shutting down gracefully...')
   
-  if (budoServerRef) {
-    await shutdownBudoServer(budoServerRef)
+  if (viteServerRef) {
+    await shutdownViteServer(viteServerRef)
   }
   
   process.exit(0)
@@ -55,28 +57,35 @@ process.on('SIGINT', async () => {
 process.on('SIGTERM', async () => {
   console.log('Received SIGTERM, shutting down gracefully...')
   
-  if (budoServerRef) {
-    await shutdownBudoServer(budoServerRef)
+  if (viteServerRef) {
+    await shutdownViteServer(viteServerRef)
   }
   
   process.exit(0)
 })
 
-// Global reference to budo server for graceful shutdown
-let budoServerRef = null
+// Global reference to Vite server for graceful shutdown
+let viteServerRef = null
 
 // Only start the server if this file is run directly
 if (require.main === module) {
   const port = config.port
   
   // Setup client development/production serving
-  setupDevServer(app).then(({ budoServer }) => {
-    budoServerRef = budoServer
+  setupDevServer(app).then(({ viteServer, proxyMiddleware }) => {
+    viteServerRef = viteServer
     
+    // Register proxy middleware if in development mode
+    if (proxyMiddleware) {
+      console.log('Registering proxy middleware')
+      app.use(proxyMiddleware)
+    }
+    
+    // Start the server after middleware is set up
     app.listen(port, () => {
       console.log('Server started on port:', port)
-      if (budoServer) {
-        console.log('Development mode: Client requests proxied to budo server')
+      if (viteServer) {
+        console.log('Development mode: Client requests proxied to Vite server')
       } else {
         console.log('API-only mode: No client serving (production CDN or test environment)')
       }

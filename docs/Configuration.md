@@ -23,7 +23,7 @@ This application uses environment variables for all configuration, following 12-
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `AUTHENTIC_SERVER` | _(empty)_ | Authentic service server URL for JWT validation |
-| `WHITELIST` | `david@davidguttman.com` | Comma-separated list of authorized email addresses |
+| `WHITELIST` | _(empty)_ | Comma-separated list of authorized email addresses |
 
 ### Google Cloud Integration
 

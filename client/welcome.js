@@ -1,9 +1,10 @@
-const html = require('nanohtml')
-const morph = require('nanomorph')
+import html from 'nanohtml'
+import morph from 'nanomorph'
 
-const state = require('./state')()
+import createState from './state.js'
+const state = createState()
 
-module.exports = function ({ name }) {
+export default function ({ name }) {
   const tree = render()
   state.on('*', key => morph(tree, render()))
   state.set({ name })

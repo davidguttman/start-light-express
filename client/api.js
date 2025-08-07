@@ -1,9 +1,7 @@
-const auth = require('./auth')
+import * as auth from './auth.js'
 
 // API utility with centralized error handling
-module.exports = {
-  apiCall
-}
+export { apiCall }
 
 async function apiCall(url, options = {}) {
   try {

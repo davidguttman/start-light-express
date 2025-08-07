@@ -1,16 +1,22 @@
-const html = require('nanohtml')
-const morph = require('nanomorph')
+import html from 'nanohtml'
+import morph from 'nanomorph'
 
-const state = require('./state')()
-const { apiCall } = require('./api')
+import createState from './state.js'
+import { apiCall } from './api.js'
 
-module.exports = function (params) {
+const state = createState()
+
+export default function (params) {
   const tree = render()
+  
+  // Set up reactivity - when state changes, morph the tree
+  state.on('*', key => {
+    morph(tree, render())
+  })
   
   // Load widgets on component mount
   loadWidgets()
-  
-  state.on('*', key => morph(tree, render()))
+
   return tree
 }
 
