@@ -2,9 +2,14 @@ import { defineConfig } from 'vite'
 import legacy from '@vitejs/plugin-legacy'
 
 export default defineConfig({
-  root: 'public',
+  root: '.',
+  resolve: {
+    alias: {
+      '@client': '/client'
+    }
+  },
   build: {
-    outDir: '../dist',
+    outDir: 'dist',
     rollupOptions: {
       input: 'public/index.html'
     },
@@ -23,9 +28,7 @@ export default defineConfig({
     hmr: {
       clientPort: 5173,
       port: 5173
-    },
-    // Express will proxy to this Vite dev server
-    // No proxy config needed here - Express handles the routing
+    }
   },
   // Enable pre-bundling for CommonJS modules
   optimizeDeps: {
