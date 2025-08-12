@@ -12,7 +12,13 @@ export default function (params) {
   // Load health status on component mount
   loadHealthStatus()
   
-  state.on('*', key => { tree = morph(tree, render()) })
+  function update () {
+    if (!tree.parentNode) return
+
+    tree = morph(tree, render())
+  }
+  state.on('*', update)
+
   return tree
 }
 

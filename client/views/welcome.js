@@ -6,7 +6,12 @@ const state = createState()
 
 export default function ({ name }) {
   let tree = render()
-  state.on('*', key => { tree = morph(tree, render()) })
+  function update () {
+    if (!tree.parentNode) return
+
+    tree = morph(tree, render())
+  }
+  state.on('*', update)
   state.set({ name })
   return tree
 }

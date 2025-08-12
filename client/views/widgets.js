@@ -8,17 +8,89 @@ const state = createState()
 
 export default function (params) {
   let tree = render()
-  
-  // Set up reactivity - when state changes, morph the tree
-  state.on('*', key => {
+  const container = html`<div>${tree}</div>`
+  state.on('*', update)
+
+  function update (key, value) {
+    console.log('state changed', key, value)
+    if (!container.parentNode) {
+      // why is this never called even after navigation?
+      console.log(container)
+      return state.off('*', update)
+    }
     tree = morph(tree, render())
-  })
+  }
   
   // Load widgets on component mount
-  loadWidgets()
+  setTimeout(loadWidgets)
 
-  return tree
+  return container
 }
+
+
+function render() {
+  return html`
+    <div class="content">
+      <h1>Widget Management</h1>
+      
+      ${state.error ? html`<div class="error">${state.error}</div>` : ''}
+      ${state.success ? html`<div class="success">${state.success}</div>` : ''}
+      
+      <h2>Create New Widget</h2>
+      <form onsubmit=${createWidget}>
+        <div class="form-group">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="quantity">Quantity:</label>
+          <input type="number" id="quantity" name="quantity" min="0" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="description">Description:</label>
+          <textarea id="description" name="description" rows="3"></textarea>
+        </div>
+        
+        <button type="submit" class="btn">Create Widget</button>
+      </form>
+
+      <h2>Existing Widgets</h2>
+      
+      ${state.loading ? html`
+        <div class="loading">Loading widgets...</div>
+      ` : ''}
+      
+      ${state.widgets && state.widgets.length > 0 ? html`
+        <div class="widget-list">
+          ${state.widgets.map(widget => html`
+            <div class="widget-item">
+              <h3>${widget.name}</h3>
+              <div class="widget-meta">
+                <p><strong>Quantity:</strong> ${widget.quantity}</p>
+                ${widget.metadata && widget.metadata.description ? html`
+                  <p><strong>Description:</strong> ${widget.metadata.description}</p>
+                ` : ''}
+                <p><strong>Created:</strong> ${new Date(widget.dateCreated).toLocaleDateString()}</p>
+                <p><strong>ID:</strong> <code>${widget._id}</code></p>
+              </div>
+              <button 
+                class="btn btn-secondary" 
+                onclick=${() => deleteWidget(widget._id)}
+              >
+                Delete
+              </button>
+            </div>
+          `)}
+        </div>
+      ` : state.widgets && state.widgets.length === 0 ? html`
+        <p>No widgets found. Create your first widget above!</p>
+      ` : ''}
+    </div>
+  `
+}
+
 
 async function loadWidgets() {
   try {
@@ -98,67 +170,4 @@ async function deleteWidget(id) {
       state.set({ error: error.message || 'Failed to delete widget. Please try again.' })
     }
   }
-}
-
-function render() {
-  return html`
-    <div class="content">
-      <h1>Widget Management</h1>
-      
-      ${state.error ? html`<div class="error">${state.error}</div>` : ''}
-      ${state.success ? html`<div class="success">${state.success}</div>` : ''}
-      
-      <h2>Create New Widget</h2>
-      <form onsubmit=${createWidget}>
-        <div class="form-group">
-          <label for="name">Name:</label>
-          <input type="text" id="name" name="name" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="quantity">Quantity:</label>
-          <input type="number" id="quantity" name="quantity" min="0" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="description">Description:</label>
-          <textarea id="description" name="description" rows="3"></textarea>
-        </div>
-        
-        <button type="submit" class="btn">Create Widget</button>
-      </form>
-
-      <h2>Existing Widgets</h2>
-      
-      ${state.loading ? html`
-        <div class="loading">Loading widgets...</div>
-      ` : ''}
-      
-      ${state.widgets && state.widgets.length > 0 ? html`
-        <div class="widget-list">
-          ${state.widgets.map(widget => html`
-            <div class="widget-item">
-              <h3>${widget.name}</h3>
-              <div class="widget-meta">
-                <p><strong>Quantity:</strong> ${widget.quantity}</p>
-                ${widget.metadata && widget.metadata.description ? html`
-                  <p><strong>Description:</strong> ${widget.metadata.description}</p>
-                ` : ''}
-                <p><strong>Created:</strong> ${new Date(widget.dateCreated).toLocaleDateString()}</p>
-                <p><strong>ID:</strong> <code>${widget._id}</code></p>
-              </div>
-              <button 
-                class="btn btn-secondary" 
-                onclick=${() => deleteWidget(widget._id)}
-              >
-                Delete
-              </button>
-            </div>
-          `)}
-        </div>
-      ` : state.widgets && state.widgets.length === 0 ? html`
-        <p>No widgets found. Create your first widget above!</p>
-      ` : ''}
-    </div>
-  `
 }
