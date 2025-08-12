@@ -1,12 +1,12 @@
 import html from 'nanohtml'
 import morph from 'nanomorph'
 
-import createState from './state.js'
+import createState from '../state.js'
 const state = createState()
 
 export default function ({ name }) {
-  const tree = render()
-  state.on('*', key => morph(tree, render()))
+  let tree = render()
+  state.on('*', key => { tree = morph(tree, render()) })
   state.set({ name })
   return tree
 }

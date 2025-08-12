@@ -4,13 +4,13 @@ import hash from 'http-hash'
 import html from 'nanohtml'
 import morph from 'nanomorph'
 
-import welcome from './welcome.js'
-import widgets from './widgets.js'
-import settings from './settings.js'
+import welcome from './views/welcome.js'
+import widgets from './views/widgets.js'
+import settings from './views/settings.js'
 import * as auth from './auth.js'
 import * as routeGuard from './route-guard.js'
-import createNavigation from './navigation.js'
-import createUserInfo from './user-info.js'
+import createNavigation from './views/navigation.js'
+import createUserInfo from './views/user-info.js'
 
 const router = hash()
 
@@ -87,7 +87,7 @@ function navigate() {
     appContainer = newTree
   } else {
     // Update existing app using nanomorph
-    morph(appContainer, newTree)
+    appContainer = morph(appContainer, newTree)
   }
 }
 

@@ -1,18 +1,18 @@
 import html from 'nanohtml'
 import morph from 'nanomorph'
 
-import createState from './state.js'
-import { apiCall } from './api.js'
+import createState from '../state.js'
+import { apiCall } from '../api.js'
 
 const state = createState()
 
 export default function (params) {
-  const tree = render()
+  let tree = render()
   
   // Load health status on component mount
   loadHealthStatus()
   
-  state.on('*', key => morph(tree, render()))
+  state.on('*', key => { tree = morph(tree, render()) })
   return tree
 }
 

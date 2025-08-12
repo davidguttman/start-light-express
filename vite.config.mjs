@@ -29,11 +29,7 @@ export default defineConfig({
   server: {
     port: 5173,
     host: 'localhost',
-    // Configure HMR to work with proxy setup
-    hmr: {
-      clientPort: 5173,
-      port: 5173
-    }
+    hmr: false
   },
   // Enable pre-bundling for CommonJS modules
   optimizeDeps: {

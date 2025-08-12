@@ -1,15 +1,15 @@
 import html from 'nanohtml'
 import morph from 'nanomorph'
 
-import createState from './state.js'
+import createState from '../state.js'
 
 const state = createState()
 
 export default function createNavigation(authState, currentHash, onLogout) {
-  const tree = render(authState, currentHash, onLogout)
+  let tree = render(authState, currentHash, onLogout)
   
   // Listen for state changes (if navigation needs reactive updates)
-  state.on('*', key => morph(tree, render(authState, currentHash, onLogout)))
+  state.on('*', key => { tree = morph(tree, render(authState, currentHash, onLogout)) })
   
   return tree
 }

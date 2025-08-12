@@ -1,17 +1,17 @@
 import html from 'nanohtml'
 import morph from 'nanomorph'
 
-import createState from './state.js'
-import { apiCall } from './api.js'
+import createState from '../state.js'
+import { apiCall } from '../api.js'
 
 const state = createState()
 
 export default function (params) {
-  const tree = render()
+  let tree = render()
   
   // Set up reactivity - when state changes, morph the tree
   state.on('*', key => {
-    morph(tree, render())
+    tree = morph(tree, render())
   })
   
   // Load widgets on component mount
