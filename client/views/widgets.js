@@ -1,27 +1,8 @@
 import html from 'nanohtml'
-import morph from 'nanomorph'
-
-import createState from '../state.js'
 import { apiCall } from '../api.js'
+import createView from './create-view.js'
 
-export default function (params) {
-  const state = createState()
-
-  let tree = render()
-  const container = html`<div>${tree}</div>`
-  state.on('*', update)
-
-  function update (key, value) {
-    console.log('state changed', key, value)
-    tree = morph(tree, render(state))
-  }
-
-  // Load widgets on component mount
-  setTimeout(loadWidgets)
-
-  return container
-
-  function render () {
+function render (state) {
     return html`
       <div class="content">
         <h1>Widget Management</h1>
@@ -102,9 +83,9 @@ export default function (params) {
           : ''}
       </div>
     `
-  }
+}
 
-  async function loadWidgets () {
+async function loadWidgets (state) {
     try {
       state.set({ loading: true, error: null })
 
@@ -123,9 +104,9 @@ export default function (params) {
         })
       }
     }
-  }
+}
 
-  async function createWidget (event) {
+async function createWidget (event) {
     event.preventDefault()
 
     const form = event.target
@@ -147,7 +128,7 @@ export default function (params) {
 
       // Reload widgets after successful creation
       form.reset()
-      loadWidgets()
+      loadWidgets(state)
       state.set({ success: 'Widget created successfully!' })
 
       // Clear success message after 3 seconds
@@ -161,9 +142,9 @@ export default function (params) {
         })
       }
     }
-  }
+}
 
-  async function deleteWidget (id) {
+async function deleteWidget (id) {
     if (!confirm('Are you sure you want to delete this widget?')) {
       return
     }
@@ -174,7 +155,7 @@ export default function (params) {
       })
 
       // Reload widgets after successful deletion
-      loadWidgets()
+      loadWidgets(state)
       state.set({ success: 'Widget deleted successfully!' })
 
       // Clear success message after 3 seconds
@@ -188,5 +169,9 @@ export default function (params) {
         })
       }
     }
-  }
 }
+
+export default createView({
+  render,
+  onMount: loadWidgets
+})
