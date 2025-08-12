@@ -86,6 +86,7 @@ function render (state) {
 }
 
 async function loadWidgets (state) {
+    console.log('loadWidgets')
     try {
       state.set({ loading: true, error: null })
 

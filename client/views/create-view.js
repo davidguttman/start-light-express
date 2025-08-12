@@ -22,13 +22,9 @@ export default function createViewFactory({ render, onMount, onDestroy, initialS
     let scheduled = false
 
     function update() {
-      if (!container.isConnected) {
-        // Detach listener and allow GC when view is no longer in DOM
-        state.off('*', update)
-        if (typeof onDestroy === 'function') onDestroy(state, params)
-        return
-      }
+      console.log('update')
       if (scheduled) return
+
       scheduled = true
       Promise.resolve().then(() => {
         scheduled = false
@@ -40,9 +36,9 @@ export default function createViewFactory({ render, onMount, onDestroy, initialS
 
     // Always defer onMount to next microtask so DOM is mounted and styles apply
     if (typeof onMount === 'function') {
+      console.log('onMount')
       Promise.resolve().then(() => {
         // The view may have been unmounted synchronously after creation
-        if (!container.isConnected) return
         onMount(state, params)
       })
     }
