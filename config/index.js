@@ -1,5 +1,6 @@
 require('dotenv').config()
 const productionize = require('productionize')
+const pkg = require('../package.json')
 
 // Default configuration
 const defaults = {
@@ -29,7 +30,8 @@ const logger = productionize({
   projectId: config.googleProjectId,
   keyFilename: config.googleApplicationCredentials,
   defaultMetadata: {
-    service: 'dg-node-express'
+    service: pkg.name,
+    version: pkg.version
   }
 })
 
